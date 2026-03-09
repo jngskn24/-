@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>撮影会予約ゲート</title>
+    <style>
+        body { font-family: sans-serif; text-align: center; padding: 50px 20px; background: #f9f9f9; }
+        .btn { display: block; width: 100%; max-width: 300px; margin: 20px auto; padding: 15px; 
+               background: #333; color: #fff; text-decoration: none; border-radius: 5px; font-weight: bold; cursor: pointer; border: none; }
+        .btn:disabled { background: #ccc; cursor: not-allowed; }
+        .msg { font-size: 0.9em; color: #666; margin-bottom: 10px; }
+    </style>
+</head>
+<body>
+
+    <h2>撮影会ご予約ページ</h2>
+
+    <div style="margin-bottom: 50px; border-bottom: 1px solid #ccc; padding-bottom: 30px;">
+        <p class="msg">リピーター様先行予約はこちら</p>
+        <button onclick="repeaterLogin()" class="btn">リピーター様専用入口</button>
+    </div>
+
+    <div>
+        <p id="status-msg" class="msg">一般予約の開始までお待ちください</p>
+        <button id="general-btn" onclick="goToBooking()" class="btn" disabled>一般のお客様はこちら</button>
+    </div>
+
+    <script>
+        // --- 設定エリア ---
+        const YOYAKU_URL = "https://liff.line.me/2004728887-16gomWqr?booking_event_id=31904&ts=1773100214"; // https://liff.line.me/2004728887-16gomWqr?booking_event_id=31904&ts=1773100214
+        const PASSWORD = "yourpassword123"; // mame2026
+        const START_TIME = new Date("2024-06-01T20:00:00").getTime(); // 2026/3/10/10:00
+        // ----------------
+
+        // リピーター用：パスワード入力
+        function repeaterLogin() {
+            const input = prompt("パスワードを入力してください");
+            if (input === PASSWORD) {
+                window.location.href = YOYAKU_URL;
+            } else if (input !== null) {
+                alert("パスワードが違います");
+            }
+        }
+
+        // 一般用：時間チェック
+        function checkTime() {
+            const now = new Date().getTime();
+            const btn = document.getElementById('general-btn');
+            const msg = document.getElementById('status-msg');
+
+            if (now >= START_TIME) {
+                btn.disabled = false;
+                btn.innerText = "一般予約を開始する";
+                msg.innerText = "ただいま予約受付中です！";
+            }
+        }
+
+        function goToBooking() {
+            window.location.href = YOYAKU_URL;
+        }
+
+        // 1秒ごとに時間をチェック
+        setInterval(checkTime, 1000);
+        checkTime();
+    </script>
+</body>
+</html>
