@@ -3,66 +3,168 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>撮影会予約ゲート</title>
+    <title>mame | Shooting Event</title>
     <style>
-        body { font-family: sans-serif; text-align: center; padding: 50px 20px; background: #f9f9f9; }
-        .btn { display: block; width: 100%; max-width: 300px; margin: 20px auto; padding: 15px; 
-               background: #333; color: #fff; text-decoration: none; border-radius: 5px; font-weight: bold; cursor: pointer; border: none; }
-        .btn:disabled { background: #ccc; cursor: not-allowed; }
-        .msg { font-size: 0.9em; color: #666; margin-bottom: 10px; }
+        /* デザイン設定 */
+        body { 
+            background-color: #fffafa; /* 背景色：スノーホワイト */
+            color: #333; 
+            font-family: "Helvetica Neue", Arial, "Hiragino Kaku Gothic ProN", "Hiragino Sans", sans-serif;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            letter-spacing: 0.05em;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        h1 {
+            font-size: 1.2rem;
+            font-weight: 300;
+            margin-bottom: 60px;
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            color: #555;
+        }
+
+        .section {
+            margin-bottom: 80px;
+        }
+
+        .label {
+            font-size: 0.7rem;
+            color: #999;
+            margin-bottom: 15px;
+            display: block;
+            text-transform: uppercase;
+        }
+
+        /* ボタンデザイン */
+        .btn {
+            display: block;
+            width: 100%;
+            padding: 18px 0;
+            background: transparent;
+            color: #333;
+            border: 1px solid #333;
+            text-decoration: none;
+            font-size: 0.85rem;
+            transition: all 0.4s ease;
+            cursor: pointer;
+            border-radius: 0; /* 直角で都会的に */
+            outline: none;
+        }
+
+        .btn:hover {
+            background: #333;
+            color: #fffafa;
+        }
+
+        .btn:disabled {
+            border-color: #ccc;
+            color: #ccc;
+            cursor: not-allowed;
+        }
+
+        .countdown {
+            font-size: 0.75rem;
+            margin-top: 15px;
+            color: #777;
+            font-feature-settings: "tnum"; /* 数字の幅を揃える */
+        }
+
+        footer {
+            margin-top: 40px;
+            font-size: 0.6rem;
+            color: #bbb;
+        }
     </style>
 </head>
 <body>
 
-    <h2>撮影会ご予約ページ</h2>
+<div class="container">
+    <h1>mame photography</h1>
 
-    <div style="margin-bottom: 50px; border-bottom: 1px solid #ccc; padding-bottom: 30px;">
-        <p class="msg">リピーター様先行予約はこちら</p>
-        <button onclick="repeaterLogin()" class="btn">リピーター様専用入口</button>
+    <div class="section">
+        <span class="label">For Repeaters</span>
+        <button onclick="repeaterLogin()" class="btn">先行予約（要パスワード）</button>
     </div>
 
-    <div>
-        <p id="status-msg" class="msg">一般予約の開始までお待ちください</p>
-        <button id="general-btn" onclick="goToBooking()" class="btn" disabled>一般のお客様はこちら</button>
+    <div class="section">
+        <span class="label">General Entry</span>
+        <div id="countdown-display" class="countdown"></div>
+        <button id="general-btn" onclick="goToBooking()" class="btn" disabled>一般予約はこちら</button>
     </div>
 
-    <script>
-        // --- 設定エリア ---
-        const YOYAKU_URL = "https://liff.line.me/2004728887-16gomWqr?booking_event_id=31904&ts=1773100214"; // https://liff.line.me/2004728887-16gomWqr?booking_event_id=31904&ts=1773100214
-        const PASSWORD = "yourpassword123"; // mame2026
-        const START_TIME = new Date("2026-03-10T09:10:00").getTime(); // 
-        // ----------------
+    <footer>© mame photography</footer>
+</div>
 
-        // リピーター用：mame2026
-        function repeaterLogin() {
-            const input = prompt("パスワードを入力してください");
-            if (input === PASSWORD) {
-                window.location.href = YOYAKU_URL;
-            } else if (input !== null) {
-                alert("パスワードが違います");
-            }
-        }
+<script>
+    /* =========================================
+       ★ ここから下の内容を毎月書き換えてください ★
+       ========================================= */
 
-        // 一般用：2026/3/10/9:00
-        function checkTime() {
-            const now = new Date().getTime();
-            const btn = document.getElementById('general-btn');
-            const msg = document.getElementById('status-msg');
+    // 【1. 予約ページのURL】
+    const YOYAKU_URL = "https://liff.line.me/2004728887-16gomWqr?booking_event_id=31904&ts=1773100214";
 
-            if (now >= START_TIME) {
-                btn.disabled = false;
-                btn.innerText = "一般予約を開始する";
-                msg.innerText = "ただいま予約受付中です！";
-            }
-        }
+    // 【2. リピーター様専用パスワード】
+    const PASSWORD = "mame20206";
 
-        function goToBooking() {
+    // 【3. 一般予約の開始日時】
+    // 書き方：年-月-日T時:分:秒
+    const START_TIME = new Date("2026-03-10T09:15:00").getTime();
+
+    /* =========================================
+       設定エリア終了（これより下は触らなくてOKです）
+       ========================================= */
+
+    // リピーター用：パスワード入力
+    function repeaterLogin() {
+        const input = prompt("リピーター様専用パスワードを入力してください");
+        if (input === PASSWORD) {
             window.location.href = YOYAKU_URL;
+        } else if (input !== null) {
+            alert("パスワードが正しくありません");
         }
+    }
 
-        // 1秒ごとに時間をチェック
-        setInterval(checkTime, 1000);
-        checkTime();
-    </script>
+    // 一般用：時間チェックとカウントダウン
+    function updateStatus() {
+        const now = new Date().getTime();
+        const btn = document.getElementById('general-btn');
+        const display = document.getElementById('countdown-display');
+        const diff = START_TIME - now;
+
+        if (diff <= 0) {
+            // 開始時間を過ぎた場合
+            btn.disabled = false;
+            display.innerText = "予約受付を開始しました";
+        } else {
+            // 開始前のカウントダウン表示
+            const h = Math.floor(diff / (1000 * 60 * 60));
+            const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+            const s = Math.floor((diff % (1000 * 60)) / 1000);
+            display.innerText = `一般予約開始まで あと ${h}時間${m}分${s}秒`;
+            btn.disabled = true;
+        }
+    }
+
+    function goToBooking() {
+        window.location.href = YOYAKU_URL;
+    }
+
+    // 1秒ごとに更新
+    setInterval(updateStatus, 1000);
+    updateStatus();
+</script>
+
 </body>
 </html>
