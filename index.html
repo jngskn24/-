@@ -5,9 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>mame | Shooting Event</title>
     <style>
-        /* デザイン設定 */
         body { 
-            background-color: #fffafa; /* 背景色：スノーホワイト */
+            background-color: #fffafa;
             color: #333; 
             font-family: "Helvetica Neue", Arial, "Hiragino Kaku Gothic ProN", "Hiragino Sans", sans-serif;
             margin: 0;
@@ -18,125 +17,50 @@
             min-height: 100vh;
             letter-spacing: 0.05em;
         }
-
-        .container {
-            width: 90%;
-            max-width: 400px;
-            text-align: center;
-            padding: 40px 20px;
-        }
-
-        h1 {
-            font-size: 1.2rem;
-            font-weight: 300;
-            margin-bottom: 60px;
-            text-transform: uppercase;
-            letter-spacing: 0.2em;
-            color: #555;
-        }
-
-        .section {
-            margin-bottom: 80px;
-        }
-
-        .label {
-            font-size: 0.7rem;
-            color: #999;
-            margin-bottom: 15px;
-            display: block;
-            text-transform: uppercase;
-        }
-
-        /* ボタンデザイン */
-        .btn {
-            display: block;
-            width: 100%;
-            padding: 18px 0;
-            background: transparent;
-            color: #333;
-            border: 1px solid #333;
-            text-decoration: none;
-            font-size: 0.85rem;
-            transition: all 0.4s ease;
-            cursor: pointer;
-            border-radius: 0; /* 直角で都会的に */
-            outline: none;
-        }
-
-        .btn:hover {
-            background: #333;
-            color: #fffafa;
-        }
-
-        .btn:disabled {
-            border-color: #ccc;
-            color: #ccc;
-            cursor: not-allowed;
-        }
-
-        .countdown {
-            font-size: 0.75rem;
-            margin-top: 15px;
-            color: #777;
-            font-feature-settings: "tnum"; /* 数字の幅を揃える */
-        }
-
-        footer {
-            margin-top: 40px;
-            font-size: 0.6rem;
-            color: #bbb;
-        }
+        .container { width: 90%; max-width: 400px; text-align: center; padding: 40px 20px; }
+        h1 { font-size: 1.2rem; font-weight: 300; margin-bottom: 60px; text-transform: uppercase; letter-spacing: 0.2em; color: #555; }
+        .section { margin-bottom: 80px; }
+        .label { font-size: 0.7rem; color: #999; margin-bottom: 15px; display: block; text-transform: uppercase; }
+        .btn { display: block; width: 100%; padding: 18px 0; background: transparent; color: #333; border: 1px solid #333; text-decoration: none; font-size: 0.85rem; transition: all 0.4s ease; cursor: pointer; border-radius: 0; outline: none; }
+        .btn:hover { background: #333; color: #fffafa; }
+        .btn:disabled { border-color: #ccc; color: #ccc; cursor: not-allowed; }
+        .countdown { font-size: 0.75rem; margin-top: 15px; color: #777; font-feature-settings: "tnum"; }
+        footer { margin-top: 40px; font-size: 0.6rem; color: #bbb; }
     </style>
 </head>
 <body>
 
 <div class="container">
     <h1>mame photography</h1>
-
     <div class="section">
         <span class="label">For Repeaters</span>
         <button onclick="repeaterLogin()" class="btn">先行予約（要パスワード）</button>
     </div>
-
     <div class="section">
         <span class="label">General Entry</span>
         <div id="countdown-display" class="countdown"></div>
         <button id="general-btn" onclick="goToBooking()" class="btn" disabled>一般予約はこちら</button>
     </div>
-
     <footer>© mame photography</footer>
 </div>
 
 <script>
-    /* =========================================
-       ★ ここから下の内容を毎月書き換えてください ★
-       ========================================= */
-
-    // 【1. 予約ページのURL】
+    /* --- 設定エリア --- */
     const YOYAKU_URL = "https://liff.line.me/2004728887-16gomWqr?booking_event_id=31904&ts=1773100214";
-
-    // 【2. リピーター様専用パスワード】
-    const PASSWORD = "mame2026";
-
-    // 【3. 一般予約の開始日時】
-    // 書き方：年-月-日T時:分:秒
+    const PASSWORD = "mame2026"; // ここにパスワード
     const START_TIME = new Date("2026-03-10T09:15:00").getTime();
+    /* --- 設定エリア終了 --- */
 
-    /* =========================================
-       設定エリア終了（これより下は触らなくてOKです）
-       ========================================= */
-
-    // リピーター用：パスワード入力
     function repeaterLogin() {
         const input = prompt("リピーター様専用パスワードを入力してください");
-        if (input === PASSWORD) {
+        // .trim() を追加して、前後の余計な空白を無視するようにしました
+        if (input && input.trim() === PASSWORD) {
             window.location.href = YOYAKU_URL;
         } else if (input !== null) {
             alert("パスワードが正しくありません");
         }
     }
 
-    // 一般用：時間チェックとカウントダウン
     function updateStatus() {
         const now = new Date().getTime();
         const btn = document.getElementById('general-btn');
@@ -144,11 +68,9 @@
         const diff = START_TIME - now;
 
         if (diff <= 0) {
-            // 開始時間を過ぎた場合
             btn.disabled = false;
             display.innerText = "予約受付を開始しました";
         } else {
-            // 開始前のカウントダウン表示
             const h = Math.floor(diff / (1000 * 60 * 60));
             const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
             const s = Math.floor((diff % (1000 * 60)) / 1000);
@@ -157,14 +79,9 @@
         }
     }
 
-    function goToBooking() {
-        window.location.href = YOYAKU_URL;
-    }
-
-    // 1秒ごとに更新
+    function goToBooking() { window.location.href = YOYAKU_URL; }
     setInterval(updateStatus, 1000);
     updateStatus();
 </script>
-
 </body>
 </html>
