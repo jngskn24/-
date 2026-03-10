@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>mame | Shooting Event</title>
+    <title>mame photography | Booking</title>
     <style>
         body { 
             background-color: #fffafa;
@@ -13,47 +13,61 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
             min-height: 100vh;
             letter-spacing: 0.05em;
         }
-        .container { width: 90%; max-width: 400px; text-align: center; padding: 40px 20px; }
-        h1 { font-size: 1.2rem; font-weight: 300; margin-bottom: 60px; text-transform: uppercase; letter-spacing: 0.2em; color: #555; }
-        .section { margin-bottom: 80px; }
-        .label { font-size: 0.7rem; color: #999; margin-bottom: 15px; display: block; text-transform: uppercase; }
-        .btn { display: block; width: 100%; padding: 18px 0; background: transparent; color: #333; border: 1px solid #333; text-decoration: none; font-size: 0.85rem; transition: all 0.4s ease; cursor: pointer; border-radius: 0; outline: none; }
-        .btn:hover { background: #333; color: #fffafa; }
-        .btn:disabled { border-color: #ccc; color: #ccc; cursor: not-allowed; }
-        .countdown { font-size: 0.75rem; margin-top: 15px; color: #777; font-feature-settings: "tnum"; }
-        footer { margin-top: 40px; font-size: 0.6rem; color: #bbb; }
+        .container { width: 100%; max-width: 450px; text-align: center; padding-bottom: 60px; }
+        .banner-img { width: 100%; height: auto; display: block; margin-bottom: 50px; }
+        .content-inner { padding: 0 30px; }
+        .section { margin-bottom: 70px; }
+        .label { font-size: 0.75rem; color: #888; margin-bottom: 20px; display: block; letter-spacing: 0.1em; }
+        .btn { display: block; width: 100%; padding: 20px 0; background: transparent; color: #333; border: 1px solid #444; text-decoration: none; font-size: 0.85rem; transition: all 0.4s ease; cursor: pointer; border-radius: 0; outline: none; }
+        .btn:hover:not(:disabled) { background: #444; color: #fffafa; }
+        .btn:disabled { border-color: #ddd; color: #ccc; cursor: not-allowed; }
+        .countdown { font-size: 0.75rem; margin-top: 15px; color: #999; font-feature-settings: "tnum"; }
+        footer { margin-top: 20px; font-size: 0.6rem; color: #bbb; letter-spacing: 0.2em; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h1>mame photography</h1>
-    <div class="section">
-        <span class="label">For Repeaters</span>
-        <button onclick="repeaterLogin()" class="btn">先行予約（要パスワード）</button>
+    <img src="マンスリーフォトバナー.jpg" alt="mame photography banner" class="banner-img">
+
+    <div class="content-inner">
+        <div class="section">
+            <span class="label">リピーター様はこちら</span>
+            <div id="repeater-msg" class="countdown"></div>
+            <button id="repeater-btn" onclick="repeaterLogin()" class="btn" disabled>先行予約（要パスワード）</button>
+        </div>
+
+        <div class="section">
+            <span class="label">一般のお客様はこちら</span>
+            <div id="general-msg" class="countdown"></div>
+            <button id="general-btn" onclick="goToBooking()" class="btn" disabled>一般予約フォームへ</button>
+        </div>
+
+        <footer>© MAME PHOTOGRAPHY</footer>
     </div>
-    <div class="section">
-        <span class="label">General Entry</span>
-        <div id="countdown-display" class="countdown"></div>
-        <button id="general-btn" onclick="goToBooking()" class="btn" disabled>一般予約はこちら</button>
-    </div>
-    <footer>© mame photography</footer>
 </div>
 
 <script>
-    /* --- 設定エリア --- */
+    /* =========================================
+       ★ 毎月の書き換えエリア ★
+       ========================================= */
+
     const YOYAKU_URL = "https://liff.line.me/2004728887-16gomWqr?booking_event_id=31904&ts=1773100214";
-    const PASSWORD = "mame2026"; // ここにパスワード
-    const START_TIME = new Date("2026-03-10T10:30:00").getTime();
-    /* --- 設定エリア終了 --- */
+    const PASSWORD = "mame2026";
+
+    // リピーター様の先行予約開始時間（例：一般の3時間前など）
+    const REPEATER_START_TIME = new Date("2026-03-10T10:40:00").getTime();
+
+    // 一般のお客様の予約開始時間
+    const GENERAL_START_TIME = new Date("2026-03-10T10:45:00").getTime();
+
+    /* ========================================= */
 
     function repeaterLogin() {
         const input = prompt("リピーター様専用パスワードを入力してください");
-        // .trim() を追加して、前後の余計な空白を無視するようにしました
         if (input && input.trim() === PASSWORD) {
             window.location.href = YOYAKU_URL;
         } else if (input !== null) {
@@ -63,25 +77,47 @@
 
     function updateStatus() {
         const now = new Date().getTime();
-        const btn = document.getElementById('general-btn');
-        const display = document.getElementById('countdown-display');
-        const diff = START_TIME - now;
 
-        if (diff <= 0) {
-            btn.disabled = false;
-            display.innerText = "予約受付を開始しました";
+        // リピーター用ボタンの制御
+        const rBtn = document.getElementById('repeater-btn');
+        const rMsg = document.getElementById('repeater-msg');
+        const rDiff = REPEATER_START_TIME - now;
+
+        if (rDiff <= 0) {
+            rBtn.disabled = false;
+            rMsg.innerText = "先行予約を受付中です";
         } else {
-            const h = Math.floor(diff / (1000 * 60 * 60));
-            const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-            const s = Math.floor((diff % (1000 * 60)) / 1000);
-            display.innerText = `一般予約開始まで あと ${h}時間${m}分${s}秒`;
-            btn.disabled = true;
+            rMsg.innerText = `先行予約開始まであと ${formatDiff(rDiff)}`;
+        }
+
+        // 一般用ボタンの制御
+        const gBtn = document.getElementById('general-btn');
+        const gMsg = document.getElementById('general-msg');
+        const gDiff = GENERAL_START_TIME - now;
+
+        if (gDiff <= 0) {
+            gBtn.disabled = false;
+            gMsg.innerText = "一般予約を受付中です";
+        } else {
+            gMsg.innerText = `一般予約開始まであと ${formatDiff(gDiff)}`;
         }
     }
 
-    function goToBooking() { window.location.href = YOYAKU_URL; }
+    // 残り時間の表示フォーマット
+    function formatDiff(diff) {
+        const h = Math.floor(diff / (1000 * 60 * 60));
+        const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+        const s = Math.floor((diff % (1000 * 60)) / 1000);
+        return `${h}時間${m}分${s}秒`;
+    }
+
+    function goToBooking() {
+        window.location.href = YOYAKU_URL;
+    }
+
     setInterval(updateStatus, 1000);
     updateStatus();
 </script>
+
 </body>
 </html>
