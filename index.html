@@ -5,48 +5,135 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>mame photography | Booking</title>
     <style>
+        /* デザイン設定：エンボス紙のような質感 */
         body { 
-            background-color: #fffafa;
-            color: #333; 
-            font-family: "Helvetica Neue", Arial, "Hiragino Kaku Gothic ProN", "Hiragino Sans", sans-serif;
+            background-color: #f7f7f5; /* わずかに温かみのあるグレー */
+            background-image: url("https://www.transparenttextures.com/patterns/paper.png"); /* 紙の質感テクスチャ */
+            color: #2c2c2c; 
+            font-family: "Optima", "Cormorant Garamond", "Shippori Mincho", "Hiragino Mincho ProN", serif;
             margin: 0;
             display: flex;
             flex-direction: column;
             align-items: center;
             min-height: 100vh;
-            letter-spacing: 0.05em;
+            letter-spacing: 0.08em;
         }
-        .container { width: 100%; max-width: 450px; text-align: center; padding-bottom: 60px; }
-        .banner-img { width: 100%; height: auto; display: block; margin-bottom: 50px; }
-        .content-inner { padding: 0 30px; }
-        .section { margin-bottom: 70px; }
-        .label { font-size: 0.75rem; color: #888; margin-bottom: 20px; display: block; letter-spacing: 0.1em; }
-        .btn { display: block; width: 100%; padding: 20px 0; background: transparent; color: #333; border: 1px solid #444; text-decoration: none; font-size: 0.85rem; transition: all 0.4s ease; cursor: pointer; border-radius: 0; outline: none; }
-        .btn:hover:not(:disabled) { background: #444; color: #fffafa; }
-        .btn:disabled { border-color: #ddd; color: #ccc; cursor: not-allowed; }
-        .countdown { font-size: 0.75rem; margin-top: 15px; color: #999; font-feature-settings: "tnum"; }
-        footer { margin-top: 20px; font-size: 0.6rem; color: #bbb; letter-spacing: 0.2em; }
+
+        .container { 
+            width: 100%; 
+            max-width: 480px; 
+            text-align: center; 
+            padding: 40px 0 80px; 
+        }
+
+        /* バナー：余白をもたせて額装風に */
+        .banner-wrapper {
+            padding: 0 30px;
+            margin-bottom: 60px;
+        }
+        .banner-img { 
+            width: 100%; 
+            height: auto; 
+            display: block; 
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05); /* 柔らかな影 */
+        }
+
+        .content-inner { padding: 0 40px; }
+
+        .section { margin-bottom: 90px; position: relative; }
+
+        /* セクションラベルに一癖プラス */
+        .section-title-en {
+            font-family: serif;
+            font-style: italic;
+            font-size: 1.4rem;
+            color: #a8a8a2;
+            margin-bottom: 5px;
+            display: block;
+        }
+
+        .label { 
+            font-size: 0.7rem; 
+            color: #555; 
+            margin-bottom: 25px; 
+            display: block; 
+            letter-spacing: 0.2em;
+            font-weight: 300;
+        }
+
+        /* ボタン：洗練された高級感 */
+        .btn { 
+            display: block; 
+            width: 100%; 
+            padding: 22px 0; 
+            background: #fff; /* 紙の白 */
+            color: #333; 
+            border: 0.5px solid #d1d1cf; 
+            text-decoration: none; 
+            font-size: 0.8rem; 
+            transition: all 0.5s cubic-bezier(0.2, 1, 0.3, 1); 
+            cursor: pointer; 
+            border-radius: 2px;
+            outline: none;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.02);
+        }
+
+        .btn:hover:not(:disabled) { 
+            background: #2c2c2c; 
+            color: #fffafa; 
+            border-color: #2c2c2c;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.08);
+        }
+
+        .btn:disabled { 
+            background: rgba(255,255,255,0.5);
+            border-color: #e0e0de; 
+            color: #bbb; 
+            cursor: not-allowed; 
+        }
+
+        .countdown { 
+            font-size: 0.65rem; 
+            margin-top: 18px; 
+            color: #999; 
+            font-feature-settings: "tnum"; 
+            font-family: sans-serif;
+            font-weight: 300;
+        }
+
+        footer { 
+            margin-top: 40px; 
+            font-size: 0.55rem; 
+            color: #aaa; 
+            letter-spacing: 0.3em; 
+            text-transform: uppercase;
+        }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <img src="マンスリーフォトバナー.png" alt="mame photography banner" class="banner-img">
+    <div class="banner-wrapper">
+        <img src="マンスリーフォトバナー.png" alt="mame photography banner" class="banner-img">
+    </div>
 
     <div class="content-inner">
         <div class="section">
-            <span class="label">リピーター様はこちら</span>
+            <span class="section-title-en">Privilege</span>
+            <span class="label">01. リピーター様はこちら</span>
             <div id="repeater-msg" class="countdown"></div>
-            <button id="repeater-btn" onclick="repeaterLogin()" class="btn" disabled>先行予約（要パスワード）</button>
+            <button id="repeater-btn" onclick="repeaterLogin()" class="btn">先行予約フォームを開く</button>
         </div>
 
         <div class="section">
-            <span class="label">一般のお客様はこちら</span>
+            <span class="section-title-en">General</span>
+            <span class="label">02. 一般のお客様はこちら</span>
             <div id="general-msg" class="countdown"></div>
-            <button id="general-btn" onclick="goToBooking()" class="btn" disabled>一般予約フォームへ</button>
+            <button id="general-btn" onclick="goToBooking()" class="btn" disabled>予約フォームを開く</button>
         </div>
 
-        <footer>© MAME PHOTOGRAPHY</footer>
+        <footer>MAME PHOTOGRAPHY</footer>
     </div>
 </div>
 
@@ -58,11 +145,11 @@
     const YOYAKU_URL = "https://liff.line.me/2004728887-16gomWqr?booking_event_id=34741&ts=1773107366";
     const PASSWORD = "mame2026";
 
-    // リピーター様の先行予約開始時間（例：一般の3時間前など）
-    const REPEATER_START_TIME = new Date("2026-03-10T10:40:00").getTime();
+    // リピーター様の先行予約開始時間
+    const REPEATER_START_TIME = new Date("2026-03-10T11:13:00").getTime();
 
     // 一般のお客様の予約開始時間
-    const GENERAL_START_TIME = new Date("2026-03-10T10:45:00").getTime();
+    const GENERAL_START_TIME = new Date("2026-03-10T11:30:00").getTime();
 
     /* ========================================= */
 
@@ -78,43 +165,39 @@
     function updateStatus() {
         const now = new Date().getTime();
 
-        // リピーター用ボタンの制御
+        // リピーター用ボタン
         const rBtn = document.getElementById('repeater-btn');
         const rMsg = document.getElementById('repeater-msg');
         const rDiff = REPEATER_START_TIME - now;
 
         if (rDiff <= 0) {
             rBtn.disabled = false;
-            rMsg.innerText = "先行予約を受付中です";
+            rMsg.innerText = "STATUS: ACCEPTING";
         } else {
-            rMsg.innerText = `先行予約開始まであと ${formatDiff(rDiff)}`;
+            rMsg.innerText = `COMING SOON: ${formatDiff(rDiff)}`;
         }
 
-        // 一般用ボタンの制御
+        // 一般用ボタン
         const gBtn = document.getElementById('general-btn');
         const gMsg = document.getElementById('general-msg');
         const gDiff = GENERAL_START_TIME - now;
 
         if (gDiff <= 0) {
             gBtn.disabled = false;
-            gMsg.innerText = "一般予約を受付中です";
+            gMsg.innerText = "STATUS: ACCEPTING";
         } else {
-            gMsg.innerText = `一般予約開始まであと ${formatDiff(gDiff)}`;
+            gMsg.innerText = `COMING SOON: ${formatDiff(gDiff)}`;
         }
     }
 
-    // 残り時間の表示フォーマット
     function formatDiff(diff) {
         const h = Math.floor(diff / (1000 * 60 * 60));
         const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
         const s = Math.floor((diff % (1000 * 60)) / 1000);
-        return `${h}時間${m}分${s}秒`;
+        return `${h}:${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
     }
 
-    function goToBooking() {
-        window.location.href = YOYAKU_URL;
-    }
-
+    function goToBooking() { window.location.href = YOYAKU_URL; }
     setInterval(updateStatus, 1000);
     updateStatus();
 </script>
